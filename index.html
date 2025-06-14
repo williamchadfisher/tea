@@ -273,8 +273,10 @@
       // Remove spaces and convert to uppercase
       const clean = postcode.replace(/\s+/g, '').toUpperCase();
       
-      // UK postcode patterns: AB12 3CD, A1 2BC, A12 3BC, AB1 2CD
-      const match = clean.match(/^([A-Z]{1,2}\d{1,2})[A-Z]?/);
+      // UK postcode patterns: 
+      // SW1A 1AA -> SW, M1 1AA -> M, B33 8TH -> B, etc.
+      // Extract just the letters at the start
+      const match = clean.match(/^([A-Z]{1,2})/);
       return match ? match[1] : null;
     }
 
