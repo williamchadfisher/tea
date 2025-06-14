@@ -220,6 +220,20 @@
       <label for="postcode">Your Postcode:</label>
       <input type="text" id="postcode" required placeholder="e.g., SW1A 1AA">
 
+      <!-- GDPR Compliance Section -->
+      <div style="background: #f8f9fa; padding: 20px; border-radius: 10px; margin: 20px 0; border-left: 4px solid #4a7c59;">
+        <h4 style="color: #2c5530; margin-bottom: 10px;">📧 Get Tea Tips & Offers (Optional)</h4>
+        <label style="font-weight: normal; margin-bottom: 15px; display: block;">
+          <input type="checkbox" id="emailConsent" style="margin-right: 8px;">
+          I'd like to receive tea recommendations and special offers by email
+        </label>
+        <label style="font-weight: normal; margin-bottom: 10px; display: block;">
+          <input type="checkbox" id="dataConsent" required style="margin-right: 8px;">
+          I agree to the <a href="#" onclick="showPrivacyPolicy()" style="color: #4a7c59;">Privacy Policy</a> and processing of my data for tea recommendations*
+        </label>
+        <p style="font-size: 0.85em; color: #666; margin: 0;">*Required. We only use your postcode to determine water hardness and email for recommendations if you opt-in above.</p>
+      </div>
+
       <label>Preferred Taste:</label>
       <div class="radio-group">
         <label class="radio-option">
@@ -310,36 +324,76 @@
       return null;
     }
 
+    function createAffiliateLink(baseUrl, productId, affiliateCode) {
+      // Example for different affiliate programs
+      if (baseUrl.includes('amazon')) {
+        return `${baseUrl}?tag=${affiliateCode}`;
+      } else if (baseUrl.includes('whittard')) {
+        return `${baseUrl}?ref=${affiliateCode}`;
+      }
+      return baseUrl;
+    }
+
     function recommendTea(hardness, taste) {
-      if (hardness < 60 && taste === "light") {
+      const affiliateCode = "yoursite-20"; // Replace with your actual affiliate ID
+      
+      // Scientifically-based recommendations
+      if (hardness < 60) {
+        if (taste === "light") {
+          return { 
+            name: "White Tea or Green Tea", 
+            link: createAffiliateLink("https://www.whittard.co.uk/tea/green-tea", "green-tea", affiliateCode),
+            description: "Soft water is perfect for delicate teas that extract quickly without becoming bitter.",
+            price: "From £8.00"
+          };
+        } else {
+          return { 
+            name: "Light Black Tea (Darjeeling)", 
+            link: createAffiliateLink("https://www.amazon.co.uk/dp/B001234567", "darjeeling", affiliateCode),
+            description: "A refined black tea that won't become overpowering in your soft water.",
+            price: "From £12.00"
+          };
+        }
+      } else if (hardness <= 120) {
+        if (taste === "light") {
+          return { 
+            name: "Earl Grey", 
+            link: createAffiliateLink("https://www.amazon.co.uk/dp/B001234568", "earl-grey", affiliateCode),
+            description: "Perfect water hardness for Earl Grey - extracts the bergamot oils beautifully.",
+            price: "From £6.00"
+          };
+        } else {
+          return { 
+            name: "English Breakfast", 
+            link: createAffiliateLink("https://www.amazon.co.uk/dp/B001234569", "english-breakfast", affiliateCode),
+            description: "Classic blend designed for typical UK water - extracts perfectly at this hardness.",
+            price: "From £5.00"
+          };
+        }
+      } else if (hardness <= 200) {
         return { 
-          name: "Darjeeling", 
-          link: "https://www.fortminstitute.com/darjeeling-tea",
-          description: "Perfect for soft water - this delicate tea will brew beautifully without becoming bitter."
-        };
-      } else if (hardness < 60) {
-        return { 
-          name: "Assam", 
-          link: "https://www.fortminstitute.com/assam-tea",
-          description: "A robust tea that stands up well even in soft water conditions."
-        };
-      } else if (hardness <= 120 && taste === "light") {
-        return { 
-          name: "Earl Grey", 
-          link: "https://www.twinings.co.uk/tea/black-tea/earl-grey-black-tea-bags",
-          description: "The bergamot oils complement moderate water hardness perfectly."
-        };
-      } else if (hardness <= 180) {
-        return { 
-          name: "English Breakfast", 
-          link: "https://www.twinings.co.uk/tea/black-tea/english-breakfast-tea-bags",
-          description: "A classic blend designed to work well with typical UK water hardness."
+          name: "Assam or Strong Breakfast Blend", 
+          link: createAffiliateLink("https://www.amazon.co.uk/dp/B001234570", "yorkshire-tea", affiliateCode),
+          description: "Robust teas that can handle harder water and still deliver full flavor.",
+          price: "From £4.00"
         };
       } else {
         return { 
-          name: "Ceylon", 
-          link: "https://www.fortminstitute.com/ceylon-tea",
-          description: "Strong enough to cut through hard water and deliver great flavor."
+          name: "Extra Strong Blend (Yorkshire Tea)", 
+          link: createAffiliateLink("https://www.amazon.co.uk/dp/B001234571", "yorkshire-hard-water", affiliateCode),
+          description: "Specially blended for hard water areas - designed to extract properly despite mineral interference.",
+          price: "From £4.50"
+        };
+      }
+    }://www.yorkshiretea.co.uk/our-teas/yorkshire-tea-original",
+          description: "Robust teas that can handle harder water and still deliver full flavor."
+        };
+      } else {
+        // Hard water - very challenging
+        return { 
+          name: "Extra Strong Blend (Yorkshire Tea)", 
+          link: "https://www.yorkshiretea.co.uk/our-teas/yorkshire-tea-hard-water",
+          description: "Specially blended for hard water areas - designed to extract properly despite mineral interference."
         };
       }
     }
@@ -352,14 +406,42 @@
       return "Hard";
     }
 
+    function showPrivacyPolicy() {
+      alert(`Privacy Policy Summary:
+      
+• We collect your email (optional) and postcode for tea recommendations
+• Your postcode determines local water hardness only
+• Email is only used if you opt-in for tips and offers
+• We don't share your data with third parties
+• You can request data deletion anytime at privacy@yoursite.com
+• Data stored securely and processed in UK/EU
+      
+Full policy available at: yoursite.com/privacy`);
+    }
+
+    // GDPR compliant form submission
     document.getElementById("teaForm").addEventListener("submit", async function(e) {
       e.preventDefault();
 
       const postcode = document.getElementById("postcode").value;
       const email = document.getElementById("email").value;
+      const emailConsent = document.getElementById("emailConsent").checked;
+      const dataConsent = document.getElementById("dataConsent").checked;
       const taste = document.querySelector('input[name="taste"]:checked').value;
       const cups = document.querySelector('input[name="cups"]:checked').value;
       const resultDiv = document.getElementById("result");
+
+      if (!dataConsent) {
+        alert("Please agree to the Privacy Policy to continue.");
+        return;
+      }
+
+      // Only process email if user consented
+      if (emailConsent && email) {
+        // Here you'd send to your email service
+        console.log("User consented to emails:", email);
+        // Example: sendToEmailService(email, postcode, taste, cups);
+      }
 
       // Show loading state
       resultDiv.innerHTML = `<p class="loading">🔍 Analyzing your water and finding the perfect tea...</p>`;
