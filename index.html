@@ -2,31 +2,397 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Tea for Your Tap</title>
-  <link rel="stylesheet" href="style.css">
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Georgia', serif;
+      background: linear-gradient(135deg, #2c5530 0%, #4a7c59 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .container {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+      max-width: 500px;
+      width: 100%;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    h1 {
+      color: #2c5530;
+      text-align: center;
+      margin-bottom: 30px;
+      font-size: 2.2rem;
+      font-weight: 300;
+      letter-spacing: -1px;
+    }
+
+    h1::before {
+      content: "🍃 ";
+      font-size: 1.5rem;
+    }
+
+    h1::after {
+      content: " ☕";
+      font-size: 1.5rem;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 25px;
+    }
+
+    label {
+      color: #2c5530;
+      font-weight: 500;
+      margin-bottom: 8px;
+      display: block;
+    }
+
+    input[type="email"], input[type="text"] {
+      padding: 12px 16px;
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      font-size: 16px;
+      transition: all 0.3s ease;
+      background: rgba(255, 255, 255, 0.8);
+    }
+
+    input[type="email"]:focus, input[type="text"]:focus {
+      outline: none;
+      border-color: #4a7c59;
+      box-shadow: 0 0 0 3px rgba(74, 124, 89, 0.1);
+      transform: translateY(-2px);
+    }
+
+    .radio-group {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 8px;
+    }
+
+    .radio-option {
+      display: flex;
+      align-items: center;
+      padding: 12px 16px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 2px solid #e0e0e0;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .radio-option:hover {
+      background: rgba(74, 124, 89, 0.1);
+      border-color: #4a7c59;
+      transform: translateY(-2px);
+    }
+
+    .radio-option input[type="radio"] {
+      margin-right: 12px;
+      transform: scale(1.2);
+    }
+
+    .radio-option:has(input[type="radio"]:checked) {
+      background: rgba(74, 124, 89, 0.15);
+      border-color: #4a7c59;
+      font-weight: 600;
+    }
+
+    button {
+      background: linear-gradient(135deg, #4a7c59 0%, #2c5530 100%);
+      color: white;
+      padding: 16px 32px;
+      border: none;
+      border-radius: 12px;
+      font-size: 18px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      margin-top: 10px;
+      box-shadow: 0 4px 15px rgba(44, 85, 48, 0.3);
+    }
+
+    button:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(44, 85, 48, 0.4);
+    }
+
+    button:active {
+      transform: translateY(-1px);
+    }
+
+    #result {
+      margin-top: 30px;
+      padding: 25px;
+      background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+      border-radius: 15px;
+      border-left: 5px solid #4a7c59;
+      display: none;
+      animation: fadeIn 0.5s ease-in;
+    }
+
+    #result.show {
+      display: block;
+    }
+
+    #result h3 {
+      color: #2c5530;
+      margin-bottom: 15px;
+      font-size: 1.4rem;
+    }
+
+    #result p {
+      margin-bottom: 10px;
+      color: #495057;
+      line-height: 1.6;
+    }
+
+    #result a {
+      display: inline-block;
+      background: #4a7c59;
+      color: white;
+      padding: 10px 20px;
+      text-decoration: none;
+      border-radius: 8px;
+      margin-top: 15px;
+      transition: all 0.3s ease;
+      font-weight: 500;
+    }
+
+    #result a:hover {
+      background: #2c5530;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(44, 85, 48, 0.3);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .loading {
+      text-align: center;
+      color: #4a7c59;
+      font-style: italic;
+    }
+
+    .error {
+      background: linear-gradient(135deg, #f8d7da 0%, #f5c2c7 100%);
+      border-left-color: #dc3545;
+    }
+
+    @media (max-width: 600px) {
+      .container {
+        padding: 25px;
+        margin: 10px;
+      }
+      
+      h1 {
+        font-size: 1.8rem;
+      }
+    }
+  </style>
 </head>
 <body>
   <div class="container">
     <h1>Tea for Your Tap</h1>
     <form id="teaForm">
       <label for="email">Your Email:</label>
-      <input type="email" id="email" required>
+      <input type="email" id="email" required placeholder="your@email.com">
 
       <label for="postcode">Your Postcode:</label>
-      <input type="text" id="postcode" required>
+      <input type="text" id="postcode" required placeholder="e.g., SW1A 1AA">
 
       <label>Preferred Taste:</label>
-      <label><input type="radio" name="taste" value="light" checked> Light & Fragrant</label>
-      <label><input type="radio" name="taste" value="bold"> Bold & Malty</label>
+      <div class="radio-group">
+        <label class="radio-option">
+          <input type="radio" name="taste" value="light" checked>
+          <span>Light & Fragrant</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="taste" value="bold">
+          <span>Bold & Malty</span>
+        </label>
+      </div>
 
       <label>Daily Tea Intake:</label>
-      <label><input type="radio" name="cups" value="1-2" checked> 1–2 cups</label>
-      <label><input type="radio" name="cups" value="3+"> 3 or more cups</label>
+      <div class="radio-group">
+        <label class="radio-option">
+          <input type="radio" name="cups" value="1-2" checked>
+          <span>1–2 cups</span>
+        </label>
+        <label class="radio-option">
+          <input type="radio" name="cups" value="3+">
+          <span>3 or more cups</span>
+        </label>
+      </div>
 
       <button type="submit">Get My Tea Match</button>
     </form>
     <div id="result"></div>
   </div>
-  <script src="script.js"></script>
+
+  <script>
+    const waterHardnessData = {
+      "AB": 40, "AL": 275, "B": 180, "BA": 260, "BB": 180, "BD": 200, "BH": 270, "BL": 160,
+      "BN": 250, "BR": 260, "BS": 260, "BT": 100, "CA": 60, "CB": 300, "CF": 100, "CH": 130,
+      "CM": 310, "CO": 290, "CR": 280, "CT": 300, "CV": 250, "CW": 150, "DA": 290, "DD": 30,
+      "DE": 230, "DG": 45, "DH": 60, "DL": 55, "DN": 160, "DT": 275, "DY": 230, "E": 290,
+      "EC": 290, "EH": 40, "EN": 290, "EX": 100, "FK": 35, "FY": 160, "G": 40, "GL": 270,
+      "GU": 300, "GY": 280, "HA": 280, "HD": 190, "HG": 150, "HP": 300, "HR": 230, "HS": 20,
+      "HU": 170, "HX": 190, "IG": 290, "IP": 310, "IV": 35, "JE": 260, "KA": 45, "KT": 290,
+      "KW": 30, "KY": 40, "L": 150, "LA": 60, "LD": 50, "LE": 260, "LL": 100, "LN": 200,
+      "LS": 180, "LU": 280, "M": 150, "ME": 310, "MK": 290, "ML": 35, "N": 290, "NE": 55,
+      "NG": 240, "NN": 270, "NP": 110, "NR": 300, "NW": 290, "OL": 160, "OX": 280, "PA": 40,
+      "PE": 300, "PH": 30, "PL": 90, "PO": 280, "PR": 170, "RG": 300, "RH": 280, "RM": 290,
+      "S": 180, "SA": 90, "SE": 290, "SG": 300, "SK": 180, "SL": 300, "SM": 280, "SN": 280,
+      "SO": 280, "SP": 270, "SR": 60, "SS": 310, "ST": 230, "SW": 290, "SY": 70, "TA": 280,
+      "TD": 35, "TF": 230, "TN": 300, "TQ": 95, "TR": 80, "TS": 60, "TW": 280, "UB": 290,
+      "W": 290, "WA": 160, "WC": 290, "WD": 290, "WF": 170, "WN": 160, "WR": 230, "WS": 220,
+      "WV": 210, "YO": 140, "ZE": 25
+    };
+
+    function extractOutcodeFromPostcode(postcode) {
+      // Remove spaces and convert to uppercase
+      const clean = postcode.replace(/\s+/g, '').toUpperCase();
+      
+      // UK postcode patterns: AB12 3CD, A1 2BC, A12 3BC, AB1 2CD
+      const match = clean.match(/^([A-Z]{1,2}\d{1,2})[A-Z]?/);
+      return match ? match[1] : null;
+    }
+
+    async function getHardnessFromPostcode(postcode) {
+      const cleanPostcode = postcode.trim().toUpperCase();
+      
+      // First try the API
+      try {
+        const apiUrl = `https://api.postcodes.io/postcodes/${cleanPostcode}`;
+        const response = await fetch(apiUrl);
+        
+        if (response.ok) {
+          const data = await response.json();
+          const outcode = data.result.outcode;
+          const hardness = waterHardnessData[outcode];
+          
+          if (hardness !== undefined) {
+            return { hardness, source: 'api' };
+          }
+        }
+      } catch (error) {
+        console.log("API unavailable, using fallback method");
+      }
+      
+      // Fallback: extract outcode manually
+      const outcode = extractOutcodeFromPostcode(cleanPostcode);
+      if (outcode && waterHardnessData[outcode] !== undefined) {
+        return { hardness: waterHardnessData[outcode], source: 'local' };
+      }
+      
+      return null;
+    }
+
+    function recommendTea(hardness, taste) {
+      if (hardness < 60 && taste === "light") {
+        return { 
+          name: "Darjeeling", 
+          link: "https://www.fortminstitute.com/darjeeling-tea",
+          description: "Perfect for soft water - this delicate tea will brew beautifully without becoming bitter."
+        };
+      } else if (hardness < 60) {
+        return { 
+          name: "Assam", 
+          link: "https://www.fortminstitute.com/assam-tea",
+          description: "A robust tea that stands up well even in soft water conditions."
+        };
+      } else if (hardness <= 120 && taste === "light") {
+        return { 
+          name: "Earl Grey", 
+          link: "https://www.twinings.co.uk/tea/black-tea/earl-grey-black-tea-bags",
+          description: "The bergamot oils complement moderate water hardness perfectly."
+        };
+      } else if (hardness <= 180) {
+        return { 
+          name: "English Breakfast", 
+          link: "https://www.twinings.co.uk/tea/black-tea/english-breakfast-tea-bags",
+          description: "A classic blend designed to work well with typical UK water hardness."
+        };
+      } else {
+        return { 
+          name: "Ceylon", 
+          link: "https://www.fortminstitute.com/ceylon-tea",
+          description: "Strong enough to cut through hard water and deliver great flavor."
+        };
+      }
+    }
+
+    function getHardnessCategory(hardness) {
+      if (hardness < 60) return "Soft";
+      if (hardness < 120) return "Moderately Soft";
+      if (hardness < 180) return "Slightly Hard";
+      if (hardness < 250) return "Moderately Hard";
+      return "Hard";
+    }
+
+    document.getElementById("teaForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+
+      const postcode = document.getElementById("postcode").value;
+      const email = document.getElementById("email").value;
+      const taste = document.querySelector('input[name="taste"]:checked').value;
+      const cups = document.querySelector('input[name="cups"]:checked').value;
+      const resultDiv = document.getElementById("result");
+
+      // Show loading state
+      resultDiv.innerHTML = `<p class="loading">🔍 Analyzing your water and finding the perfect tea...</p>`;
+      resultDiv.className = "show";
+
+      const result = await getHardnessFromPostcode(postcode);
+
+      if (result === null) {
+        resultDiv.innerHTML = `
+          <div class="error">
+            <h3>Postcode Not Found</h3>
+            <p>Sorry, we couldn't find water hardness data for "<strong>${postcode}</strong>". Please check it's a valid UK postcode (e.g., SW1A 1AA, M1 1AA, B1 1BB).</p>
+          </div>
+        `;
+        resultDiv.className = "show error";
+        return;
+      }
+
+      const hardness = result.hardness;
+      const dataSource = result.source;
+      const tea = recommendTea(hardness, taste);
+      const hardnessCategory = getHardnessCategory(hardness);
+      
+      resultDiv.innerHTML = `
+        <h3>🍃 Your Perfect Tea Match</h3>
+        <p><strong>Location:</strong> ${postcode.toUpperCase()}</p>
+        <p><strong>Water Type:</strong> ${hardnessCategory} (${hardness} ppm)</p>
+        <p><strong>Recommended Tea:</strong> ${tea.name}</p>
+        <p><strong>Why this works:</strong> ${tea.description}</p>
+        <p><strong>Your Preferences:</strong> ${taste === 'light' ? 'Light & Fragrant' : 'Bold & Malty'} • ${cups === '1-2' ? '1-2 cups daily' : '3+ cups daily'}</p>
+        ${dataSource === 'local' ? '<p style="font-size: 0.9em; color: #666; font-style: italic;">⚠️ Used local data (API unavailable)</p>' : ''}
+        <a href="${tea.link}" target="_blank">🛒 Buy this tea</a>
+      `;
+      resultDiv.className = "show";
+    });
+  </script>
 </body>
 </html>
